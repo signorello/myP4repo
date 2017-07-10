@@ -1,0 +1,33 @@
+PORT KNOCK FIREWALL example
+-----------------------------------
+The code in this directory implements a simple port knock firewall, you can read more about the general idea at https://en.wikipedia.org/wiki/Port_knocking
+
+The p4 program and the set of rules in the commands.txt file drop all the packets from an IP source address until the secret right sequence of port numbers "2222, 3333, 4444" is knocked. When this happens, the P4-target forwards the next packet with TCP destination port 22 from the same IP source address.
+To test the correctness of the program, you can use two simple client and server applications included in this repository together with the official software switch, bmv2, available at p4.org github repository.
+
+This exercises was inspired by the following read:
+
+Bianchi, Giuseppe, et al. "OpenState: programming platform-independent stateful openflow applications inside the switch." ACM SIGCOMM Computer Communication Review 44.2 (2014): 44-51.
+
+Explanation about the code
+----------------------------
+A portKnockFirewall can be implemented by writing the code for a state machine in P4. A state machine for this firewall includes a table to keep the status for every different client (IP source address) and a table to define transitions from one state to the next according to the actual state and the TCP destination port. Hence, the P4 program does nothing more that loading the state of a flow which is kept by a register (since P4 tables cannot be written within a P4 program) indexed by the hash of the IP src address; then, it applies a transition rule which is defined in the 'transition_table'.
+Indeed, in this case, a huge part of the logic is defined in the 'commands.txt' file, where the transition rules are specified.
+
+Testing steps
+------------------------
+1 - Compile the P4 program:
+  $ p4c-bmv2 --json portK.json p4src/portKnockFirewall.p4
+
+2 - Start the bmv2 software-switch and populate the tables defined in the P4 program:
+  $ sudo $BMV2_DIR/tools/veth_setup.sh
+  $ sudo $BMV2_DIR/targets/simple_switch/simple_switch -i 0@veth1 -i 1@veth3 -i 2@veth5 -i 3@veth7 --log-console portK.json
+  $ $BMV2_DIR/tools/runtime_CLI.py --json portK.json < commands.txt
+
+3 - Test the program by opening three different terminals:
+  1st terminal: $ sudo python knockedServer.py
+  2nd terminal for a malicious client: $ sudo python portKnocker.py 10.2.1.4 malicious
+					stdout: no packet printed on the knockedServer terminal
+		    
+  3rd terminal for a legitimate client: $ sudo python portKnocker.py 10.2.1.4 legitimate 
+					stdout: port 22 reached  on the knockedServer terminal
