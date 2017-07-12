@@ -1,13 +1,9 @@
 table_set_default state_table load_state
 table_set_default transition_table forward_or_drop 0 0
 table_add transition_table forward_or_drop 0 2222&&&0xffff => 1 0 1
-table_add transition_table forward_or_drop 0 0&&&0 => 0 0 2
 table_add transition_table forward_or_drop 1 3333&&&0xffff => 2 0 1
-table_add transition_table forward_or_drop 1 0&&&0 => 0 0 2
 table_add transition_table forward_or_drop 2 4444&&&0xffff => 3 0 1
-table_add transition_table forward_or_drop 2 0&&&0 => 0 0 2
 table_add transition_table forward_or_drop 3 22&&&0xffff => 4 1 1
-table_add transition_table forward_or_drop 3 0&&&0 => 0 0 2
 table_add transition_table forward_or_drop 4 22&&&0xffff => 4 1 1
 table_add transition_table forward_or_drop 4 0&&&0 => 4 0 2 
 table_set_default send_table _drop
