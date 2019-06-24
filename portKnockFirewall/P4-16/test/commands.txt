@@ -1,5 +1,4 @@
-table_add transition_table update_drop 0 2222&&&0xffff => 1 1
-table_add transition_table update_drop 1 3333&&&0xffff => 2 1
-table_add transition_table update_drop 2 4444&&&0xffff => 3 1
-table_add transition_table forward 3 22&&&0xffff => 1 1
-table_add transition_table update_drop 3 0&&&0 => 0 2 
+table_add transition_table update_drop 0 2222 => 1
+table_add transition_table update_drop 1 3333 => 2
+table_add transition_table update_drop 2 4444 => 3
+table_add transition_table forward 3 22 => 1

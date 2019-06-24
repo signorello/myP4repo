@@ -81,7 +81,7 @@ control MyIngress(inout headers hdr,
 
 	    key = {
 		  meta.flow_status : exact;
-		  hdr.tcp.dstPort : ternary;
+		  hdr.tcp.dstPort : exact;
 	    }
 
 	    actions =  {
