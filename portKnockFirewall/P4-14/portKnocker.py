@@ -6,12 +6,15 @@ import pdb
 from scapy.all import *
 
 srcIP = ""
+vethFace = ""
 
 def main(argv=None):
     argv = sys.argv
     global srcIP
+    global vethFace
     srcIP = argv[1]
     mode = argv[2]
+    vethFace = argv[3]
 
     print 'Starting {} client {}\n'.format(mode,srcIP)
     
@@ -38,7 +41,7 @@ def main(argv=None):
 
 def sendAndWait(tcpDstPort):
     packet = Ether()/IP(src=srcIP,dst="10.0.3.10")/TCP(dport=tcpDstPort) 
-    sendp(packet,iface="veth0")
+    sendp(packet,iface=vethFace)
     print "Sending to port {}\n".format(tcpDstPort)
     time.sleep(1)
 
